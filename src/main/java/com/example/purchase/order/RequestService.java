@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -42,6 +44,7 @@ class RequestService{
         requestRepository.findAll(Specification.where(itemNameEquals(itemName)).and(itemColorEquals(itemColor)).and(poEquals(po)).and(dateEquals(date))).forEach(updated -> poRequests.add((Request) updated));
         return poRequests;
     }
+
 
     private Specification<Request> itemCodeEquals(final String itemCode) {
 
