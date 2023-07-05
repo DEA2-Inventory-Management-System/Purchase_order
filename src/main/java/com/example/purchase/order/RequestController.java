@@ -23,6 +23,10 @@ class RequestController {
     private List<Request> getRequest(@RequestParam(required = false) String itemName, @RequestParam(required = false) String itemColor, @RequestParam(required = false) String po, @RequestParam(required = false) String date){
         return requestService.getRequests( itemName, itemColor, po, date);
     }
-    
+
+    @PutMapping("/purchaseOrder/{id}")
+    private ResponseEntity<Object> updateRequest(@PathVariable int id, @RequestBody Request request){
+        return requestService.updateRequest(id,request);
+    }
 
 }
