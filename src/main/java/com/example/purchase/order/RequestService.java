@@ -6,6 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -44,6 +46,41 @@ class RequestService{
         requestRepository.findAll(Specification.where(itemNameEquals(itemName)).and(itemColorEquals(itemColor)).and(poEquals(po)).and(dateEquals(date))).forEach(updated -> poRequests.add((Request) updated));
         return poRequests;
     }
+
+
+    public ResponseEntity<Object> deleteRequestById(int id) {
+        try {
+            //check if employee exist in database
+            Optional<Request> poRequest = requestRepository.findById(id);
+            if (poRequest != null) {
+                requestRepository.deleteById(id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<Object> updateRequest(int id, Request request) {
+        //check if employee exist in database
+        Optional<Request> poObj = requestRepository.findById(id);
+        Request poRequest = poObj.get();
+        if (poObj != null) {
+            poRequest.setItemName(request.getItemName());
+            poRequest.setPo(request.getPo());
+            poRequest.setDate(request.getDate());
+            poRequest.setQuantity(request.getQuantity());
+            poRequest.setItemColor(request.getItemColor());
+            poRequest.setUnitPrice(request.getUnitPrice());
+            return new ResponseEntity<>(requestRepository.save(poRequest), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 
 
     private Specification<Request> itemCodeEquals(final String itemCode) {
